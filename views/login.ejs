@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <% if (mode == "login") { %>
+            <title>Login</title>
+        <% } else if (mode == "signup") { %>
+            <title>Signup</title>
+        <% } %>
+
+        <link rel="stylesheet" href="/public/css/bootstrap-grid.min.css">
+        <link rel="stylesheet" href="/public/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/public/css/style.css">
+        <link rel="icon" href="/public/images/favicon.ico">
+        <style>
+            .container {
+                width: 45rem;
+                margin-top: 5rem;
+            }
+        </style>
+    </head>
+
+    <body>
+        <%- include("../components/header.ejs"); %>
+
+        <% if (error) { %>
+            <div class="alert-danger text-center border-danger border error-div">
+                <p class="error-p"><%= error %></p>
+            </div>
+            <br />
+        <% } %>
+
+        <div class="container">
+            <div class="text-center card">
+                <div class="card-body">
+                    <h2 class="card-title text-decoration-underline"><%= mode == "login" ? "Login" : "Signup" %></h2>
+                    <% if (mode == "login") { %>
+                        <form method="post" action="/auth/login">
+                            <input type="text" placeholder="Username" name="username">
+                            <br /><br />
+                            <input type="password" placeholder="Password" name="password">
+                            <br /><br />
+                            <button type="submit" class="btn btn-primary">Login</button>
+                            <p>Don't have an account? <a href="/auth/signup">Signup Here</a></p>
+                        </form>
+                    <% } else if (mode == "signup") { %>
+                        <form method="post" action="/auth/signup">
+                            <input type="text" placeholder="Username" name="username">
+                            <br /><br />
+                            <input type="password" placeholder="Password" name="password">
+                            <br /><br />
+                            <input type="password" placeholder="Confirm Password" name="passwordConfirm">
+                            <br /><br />
+                            <button type="submit" class="btn btn-primary">Signup</button>
+                            <p>Already have an account? <a href="/auth/login">Login Here</a></p>
+                        </form>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
