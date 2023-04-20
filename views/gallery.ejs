@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Images Gallery</title>
+        <style>
+            p {
+                margin-top: 0;
+                margin-bottom: 0;
+            }
+        </style>
+        <link rel="stylesheet" href="/public/css/bootstrap-grid.min.css">
+        <link rel="stylesheet" href="/public/css/bootstrap.min.css">
+        <link rel="icon" href="/public/images/favicon.ico">
+        <script src="https://kit.fontawesome.com/a6ac61292a.js" crossorigin="anonymous"></script>
+    </head>
+    
+    <body>
+        <%- include("../components/header.ejs"); %>
+        <br />
+
+        <h2 style="text-align: center;">Image Gallery</h2>
+        <br />
+
+        <% if (images.length > 0) { %>
+            <div class="container">
+                <div class="row">
+                    <% images.forEach((image) => { %>
+                        <div class="col-md-4 mb-4">
+                            <div class="card">
+                                <img src="/public/images/<%= image.name %>" alt="<%= image.alt %>" class="card-img-top">
+                                <div class="card-body">
+                                    <h5 class="card-title"><%= image.alt %></h5>
+                                    <p class="card-text">
+                                        <%= image.views %> View<%- image.views == 1 ? "" : "s" %>
+                                         <% if (ratings[image.id]) { %>
+                                            <br />
+                                            <i class="fa-solid fa-star" id="1" style="color: #ff8040;"></i> <%= ratings[image.id] %>
+                                        <% } %>
+                                    </p>
+                                    <a href="/<%= image.id %>" class="btn btn-primary">View Image</a>
+                                </div>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            </div>
+        <% } else { %>
+            <p class="text-center">There are no images uploaded yet</p>
+            <br />
+            <% if (user) { %>
+                <p class="text-center">You can upload an image <a href="/upload">here</a></p>
+            <% } %>
+        <% } %>
+    </body>
+</html>
