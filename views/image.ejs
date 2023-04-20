@@ -22,7 +22,7 @@
         </style>
         <% if (user) { %>
             <style>
-                .fa-star {
+                #rate > .fa-star {
                     cursor: pointer;
                 }
             </style>
@@ -49,7 +49,7 @@
                 <%= image.views %> View<%- image.views == 1 ? "" : "s" %>
                 <% if (rating) { %>
                     <br />
-                    <i class="fa-solid fa-star" id="1" style="color: #ff8040;"></i> <%= rating %>
+                    <i class="fa-solid fa-star" style="color: #ff8040;"></i> <%= rating %>
                 <% } %>
             </p>
 
@@ -66,6 +66,22 @@
             </div>
             <br/>
             <br />
+
+            <% if (user && user.admin) { %>
+                <div class="container text-center">
+                    <div class="card">
+                        <h3 class="text-decoration-underline">Set new image Description</h3>
+                        <div class="card-body">
+                            <form action="/<%= image.id %>" method="post">
+                                <input type="text" maxlength="50" name="description" placeholder="Description" class="form-control">
+                                <br />
+                                <button type="submit" class="btn btn-primary">Set Description</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <br />
+            <% } %>
 
             <h3 class="text-center text-decoration-underline">Comments</h3>
             <div class="container">
@@ -107,7 +123,7 @@
             <% if (user) { %>
                 <script defer>
                     $(document).ready(() => {
-                        $("i.fa-star").hover(
+                        $("#rate > i.fa-star").hover(
                             (ev) => {
                                 const targetNum = Number(ev.target.id);
                                 for (let i = 1; i <= targetNum; i++) {
@@ -124,7 +140,7 @@
                             }
                         );
 
-                        $("i.fa-star").click((ev) => {
+                        $("#rate > i.fa-star").click((ev) => {
                             $.ajax({
                                 method: "post",
                                 url: "/<%= image.id %>/ratings",
@@ -132,6 +148,7 @@
                                     user: "<%= user.id %>",
                                     rating: ev.target.id
                                 },
+                                dataType: "json",
                                 success: () => {
                                     window.location.reload();
                                 }

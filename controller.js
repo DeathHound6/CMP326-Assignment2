@@ -12,9 +12,11 @@ const db = require("./db.js");
 function render(req, res, view, data = {}, statusCode = 200) {
     const ejsData = Object.assign({
         user: req.user || null,
-        error: req.messages && 0 in req.messages ? req.messages[0].message : req.session?.error || null
+        error: req.messages && 0 in req.messages ? req.messages[0].message : req.session?.error || null,
+        notFound: req.session?.notFound || false
     }, data);
-    delete req.session.error;
+    delete req.session?.notFound;
+    delete req.session?.error;
     res.status(statusCode).render(view, ejsData);
 }
 function generateImageName() {
@@ -151,12 +153,30 @@ exports.getAppImage = [
         render(req, res, "image.ejs", { image, comments, rating }, 200);
     }
 ];
+exports.postAppImage = [
+    async(req, res) => {
+        const image = await db.getImage(Number(req.params.image));
+        if (!image) {
+            req.session.notFound = true;
+            req.session.error = "No Image Found";
+            return render(req, res, "image.ejs", { image }, 404);
+        }
+        if (!req.body.description) {
+            req.session.error = "Ensure all fields are filled out";
+            return res.status(400).redirect(`/${image.toObject().id}`);
+        }
+        image.alt = req.body.description;
+        await db.updateImage(image);
+        res.status(200).redirect(`/${image.toObject().id}`);
+    }
+];
 exports.postAppImageComments = [
     async(req, res) => {
         if (!req.user)
             return res.status(401).redirect("/auth/login");
         const image = await db.getImage(Number(req.params.image));
         if (!image) {
+            req.session.notFound = true;
             req.session.error = "No Image Found";
             return render(req, res, "image.ejs", { image }, 404);
         }

@@ -24,5 +24,6 @@ app.get("/auth/signup", ...controller.getAuthSignup);
 app.post("/auth/signup", ...controller.postAuthSignup);
 app.get("/auth/logout", ...controller.getAuthLogout);
 app.get("/:image", ...controller.getAppImage);
+app.post("/:image", ...controller.postAppImage);
 app.post("/:image/comments", ...controller.postAppImageComments);
 app.post("/:image/ratings", ...controller.postAppImageRatings);
