@@ -32,7 +32,7 @@
                                     <h5 class="card-title"><%= image.alt %></h5>
                                     <p class="card-text">
                                         <%= image.views %> View<%- image.views == 1 ? "" : "s" %>
-                                         <% if (ratings[image.id]) { %>
+                                        <% if (ratings[image.id]) { %>
                                             <br />
                                             <i class="fa-solid fa-star" id="1" style="color: #ff8040;"></i> <%= ratings[image.id] %>
                                         <% } %>

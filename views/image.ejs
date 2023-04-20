@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <% if (image) { %>
+            <title><%= image.alt %></title>
+        <% } else { %>
+            <title>No Image Found</title>
+        <% } %>
+        <link rel="stylesheet" href="/public/css/bootstrap-grid.min.css">
+        <link rel="stylesheet" href="/public/css/bootstrap.min.css">
+        <link rel="icon" href="/public/images/favicon.ico">
+        <style>
+            .container {
+                width: 45rem;
+            }
+            .form-control {
+                width: 40rem;
+                margin-right: auto;
+                margin-left: auto;
+            }
+        </style>
+        <% if (user) { %>
+            <style>
+                .fa-star {
+                    cursor: pointer;
+                }
+            </style>
+        <% } %>
+        <script src="https://kit.fontawesome.com/a6ac61292a.js" crossorigin="anonymous"></script>
+        <script src="/public/js/jquery.js"></script>
+    </head>
+
+    <body>
+        <%- include("../components/header.ejs"); %>
+        <br />
+
+        <h2 style="text-align: center;"><%= image.alt %></h2>
+        <br />
+
+        <img src="/public/images/<%= image.name %>" alt="<%= image.alt %>" class="rounded" style="display: block; margin-left: auto; margin-right: auto;">
+        <p class="card-text" style="text-align: center;">
+            <%= image.views %> View<%- image.views == 1 ? "" : "s" %>
+            <% if (rating) { %>
+                <br />
+                <i class="fa-solid fa-star" id="1" style="color: #ff8040;"></i> <%= rating %>
+            <% } %>
+        </p>
+
+        <div id="rate" class="text-center">
+            <h3 class="text-decoration-underline">Rate this Image</h3>
+            <% if (!user) { %>
+                <p class="card-subtitle">You must be logged in to rate</p>
+            <% } %>
+            <i class="fa-regular fa-star" id="1" style="color: #ff8040;"></i>
+            <i class="fa-regular fa-star" id="2" style="color: #ff8040;"></i>
+            <i class="fa-regular fa-star" id="3" style="color: #ff8040;"></i>
+            <i class="fa-regular fa-star" id="4" style="color: #ff8040;"></i>
+            <i class="fa-regular fa-star" id="5" style="color: #ff8040;"></i>
+        </div>
+        <br/>
+        <br />
+
+        <h3 class="text-center text-decoration-underline">Comments</h3>
+        <div class="container">
+            <% if (comments.length > 0) { %>
+                <% comments.forEach((comment) => { %>
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h5 class="card-title"><%= comment.user %></h5>
+                            <p class="card-text"><%= comment.comment %></p>
+                        </div>
+                    </div>
+                    <br />
+                <% }); %>
+            <% } else { %>
+                <p class="card-subtitle" style="text-align: center;">There are no comments yet</p>
+                <br/>
+            <% } %>
+
+
+            <div class="card text-center">
+                <div class="alert-danger text-center border-danger">
+                    <% if (error) { %>
+                        <p><%= error %></p>
+                    <% } %>
+                </div>
+                <h4 class="card-title" style="text-decoration: underline;">Post a Comment</h4>
+                <% if (!user) { %>
+                    <p class="card-subtitle">You must be logged in to comment</p>
+                <% } %>
+                <form method="post" action="/<%= image.id %>/comments">
+                    <input type="text" placeholder="Comment Message" class="form-control" maxlength="50" name="comment" <%= user ? "" : "disabled" %>>
+                    <br />
+                    <button type="submit" class="btn btn-primary" <%= user ? "" : "disabled" %> style="display: block; margin-left: auto; margin-right: auto;">Post Comment</button>
+                    <br />
+                </form>
+            </div>
+        </div>
+        <br />
+
+        <% if (user) { %>
+            <script defer>
+                $(document).ready(() => {
+                    $("i.fa-star").hover(
+                        (ev) => {
+                            const targetNum = Number(ev.target.id);
+                            for (let i = 1; i <= targetNum; i++) {
+                                $(`#${i}`).addClass("fa-solid");
+                                $(`#${i}`).removeClass("fa-regular");
+                            }
+                        },
+                        (ev) => {
+                            const targetNum = Number(ev.target.id);
+                            for (let i = 1; i <= targetNum; i++) {
+                                $(`#${i}`).removeClass("fa-solid");
+                                $(`#${i}`).addClass("fa-regular");
+                            }
+                        }
+                    );
+
+                    $("i.fa-star").click((ev) => {
+                        $.ajax({
+                            method: "post",
+                            url: "/<%= image.id %>/ratings",
+                            data: {
+                                user: "<%= user.id %>",
+                                rating: ev.target.id
+                            },
+                            success: () => {
+                                window.location.reload();
+                            }
+                        });
+                    });
+                });
+            </script>
+        <% } %>
+    </body>
+</html>
