@@ -13,8 +13,11 @@ function render(req, res, view, data = {}, statusCode = 200) {
     const ejsData = Object.assign({
         user: req.user || null,
         error: req.messages && 0 in req.messages ? req.messages[0].message : req.session?.error || null,
+        // notFound will only be used in rendering views/image.ejs for when no image of the id/name exists
         notFound: req.session?.notFound || false
     }, data);
+    // remove the data from the session after it's loaded into ejsData
+    // this will prevent these errors being displayed on the UI after the page is refreshed
     delete req.session?.notFound;
     delete req.session?.error;
     res.status(statusCode).render(view, ejsData);
@@ -126,8 +129,8 @@ exports.postAppUpload =  [
             req.session.error = "Ensure all fields are filled out";
             return res.status(400).redirect("/upload");
         }
-        // generate random filename to preven potential overlap of uploaded filenames
-        // get the same file extension from the original filename
+        // generate random filename to prevent potential overlap of uploaded filenames
+        // get the same file extension from the original filename - parts[parts.length-1]
         const parts = req.file.originalname.split(".");
         const name = `${generateImageName()}.${parts[parts.length-1]}`;
         await db.insertImage({
