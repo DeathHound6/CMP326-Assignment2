@@ -95,7 +95,7 @@
                         <p class="card-subtitle">You must be logged in to comment</p>
                     <% } %>
                     <form method="post" action="/<%= image.id %>/comments">
-                        <input type="text" placeholder="Comment Message" class="form-control" maxlength="50" name="comment" <%= user ? "" : "disabled" %> required>
+                        <input type="text" placeholder="Comment Message" class="form-control" maxlength="255" name="comment" <%= user ? "" : "disabled" %> required>
                         <br />
                         <button type="submit" class="btn btn-primary" <%= user ? "" : "disabled" %> style="display: block; margin-left: auto; margin-right: auto;">Post Comment</button>
                         <br />
