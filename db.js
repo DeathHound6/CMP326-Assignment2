@@ -222,6 +222,12 @@ async function insertImage(image) {
 async function updateImage(image) {
     await query("UPDATE images SET views = ?, alt = ? WHERE id = ?", [image.views, image.alt, image.id]);
 }
+/**
+ * @param {Number} imageId
+ */
+async function deleteImage(imageId) {
+    await query("DELETE FROM images WHERE id = ?", [imageId]);
+}
 
 /**
  * @param {Number} imageId
@@ -283,6 +289,7 @@ module.exports = {
     getImage,
     insertImage,
     updateImage,
+    deleteImage,
 
     // ratings
     getAverageRatingForImage,

@@ -170,6 +170,18 @@ exports.postAppImage = [
         res.status(200).redirect(`/${image.toObject().id}`);
     }
 ];
+exports.postAppImageRemove = [
+    async(req, res) => {
+        const image = await db.getImage(Number(req.params.image));
+        if (!image) {
+            req.session.notFound = true;
+            req.session.error = "No Image Found";
+            return render(req, res, "image.ejs", { image }, 404);
+        }
+        await db.deleteImage(image.toObject().id);
+        res.status(200).redirect("/");
+    }
+];
 exports.postAppImageComments = [
     async(req, res) => {
         if (!req.user)
