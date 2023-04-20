@@ -35,20 +35,20 @@
                     <h2 class="card-title text-decoration-underline"><%= mode == "login" ? "Login" : "Signup" %></h2>
                     <% if (mode == "login") { %>
                         <form method="post" action="/auth/login">
-                            <input type="text" placeholder="Username" name="username">
+                            <input type="text" placeholder="Username" name="username" required>
                             <br /><br />
-                            <input type="password" placeholder="Password" name="password">
+                            <input type="password" placeholder="Password" name="password" required>
                             <br /><br />
                             <button type="submit" class="btn btn-primary">Login</button>
                             <p>Don't have an account? <a href="/auth/signup">Signup Here</a></p>
                         </form>
                     <% } else if (mode == "signup") { %>
                         <form method="post" action="/auth/signup">
-                            <input type="text" placeholder="Username" name="username">
+                            <input type="text" placeholder="Username" name="username" required>
                             <br /><br />
-                            <input type="password" placeholder="Password" name="password">
+                            <input type="password" placeholder="Password" name="password" required>
                             <br /><br />
-                            <input type="password" placeholder="Confirm Password" name="passwordConfirm">
+                            <input type="password" placeholder="Confirm Password" name="passwordConfirm" required>
                             <br /><br />
                             <button type="submit" class="btn btn-primary">Signup</button>
                             <p>Already have an account? <a href="/auth/login">Login Here</a></p>
