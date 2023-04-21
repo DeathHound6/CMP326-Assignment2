@@ -5,20 +5,17 @@ const passport = require("passport"),
     session = require("express-session"),
     multer = require("multer")(),
     MemoryStore = require("memorystore")(session),
-    { writeFileSync } = require("fs");
+    { writeFileSync, rmSync } = require("fs");
 
 const db = require("./db.js");
 
 function render(req, res, view, data = {}, statusCode = 200) {
     const ejsData = Object.assign({
         user: req.user || null,
-        error: req.messages && 0 in req.messages ? req.messages[0].message : req.session?.error || null,
-        // notFound will only be used in rendering views/image.ejs for when no image of the id/name exists
-        notFound: req.session?.notFound || false
+        error: req.messages && 0 in req.messages ? req.messages[0].message : req.session?.error || null
     }, data);
     // remove the data from the session after it's loaded into ejsData
     // this will prevent these errors being displayed on the UI after the page is refreshed
-    delete req.session?.notFound;
     delete req.session?.error;
     res.status(statusCode).render(view, ejsData);
 }
@@ -160,7 +157,6 @@ exports.postAppImage = [
     async(req, res) => {
         const image = await db.getImage(Number(req.params.image));
         if (!image) {
-            req.session.notFound = true;
             req.session.error = "No Image Found";
             return render(req, res, "image.ejs", { image }, 404);
         }
@@ -177,10 +173,10 @@ exports.postAppImageRemove = [
     async(req, res) => {
         const image = await db.getImage(Number(req.params.image));
         if (!image) {
-            req.session.notFound = true;
             req.session.error = "No Image Found";
             return render(req, res, "image.ejs", { image }, 404);
         }
+        rmSync(`${__dirname}/public/images/${image.toObject().name}`);
         await db.deleteImage(image.toObject().id);
         res.status(200).redirect("/");
     }
@@ -191,7 +187,6 @@ exports.postAppImageComments = [
             return res.status(401).redirect("/auth/login");
         const image = await db.getImage(Number(req.params.image));
         if (!image) {
-            req.session.notFound = true;
             req.session.error = "No Image Found";
             return render(req, res, "image.ejs", { image }, 404);
         }
