@@ -12,7 +12,7 @@ const db = require("./db.js");
 function render(req, res, view, data = {}, statusCode = 200) {
     const ejsData = Object.assign({
         user: req.user || null,
-        error: req.messages && 0 in req.messages ? req.messages[0].message : req.session?.error || null
+        error: req.session?.messages && 0 in req.session.messages ? req.session.messages[0].message : req.session?.error || null
     }, data);
     // remove the data from the session after it's loaded into ejsData
     // this will prevent these errors being displayed on the UI after the page is refreshed
