@@ -106,6 +106,7 @@ exports.getAppRoot = [
         for (const image of images)
             ratings[image.id] = await db.getAverageRatingForImage(image.id);
         render(req, res, "gallery.ejs", { images, ratings });
+
     }
 ];
 
@@ -154,6 +155,8 @@ exports.getAppImage = [
 ];
 exports.postAppImage = [
     async(req, res) => {
+        if (!req.user?.admin)
+            return res.status(401).redirect("/auth/login");
         const image = await db.getImage(Number(req.params.image));
         if (!image) {
             req.session.error = "No Image Found";
@@ -170,6 +173,8 @@ exports.postAppImage = [
 ];
 exports.postAppImageRemove = [
     async(req, res) => {
+        if (!req.user?.admin)
+            return res.status(401).redirect("/auth/login");
         const image = await db.getImage(Number(req.params.image));
         if (!image) {
             req.session.error = "No Image Found";
@@ -199,6 +204,8 @@ exports.postAppImageComments = [
 ];
 exports.postAppImageRatings = [
     async(req, res) => {
+        if (!req.user)
+            return res.status(401).redirect("/auth/login");
         const user = await db.getUserById(Number(req.body.user));
         if (!user)
             return res.status(401).redirect("/auth/login");
@@ -285,6 +292,8 @@ exports.postAuthSignup = [
 ];
 exports.getAuthLogout = [
     async(req, res) => {
+        if (!req.user)
+            return res.status(302).redirect("/");
         req.logOut((err) => {
             if (err)
                 console.error(err);
