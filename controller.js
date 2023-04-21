@@ -250,14 +250,14 @@ exports.postAuthLogin = [
 ];
 exports.getAuthSignup = [
     (req, res) => {
-        if (req.session?.user)
+        if (req.user)
             return res.status(302).redirect("/");
         render(req, res, "login.ejs", { mode: "signup" });
     }
 ];
 exports.postAuthSignup = [
     async(req, res, next) => {
-        if (req.session?.user)
+        if (req.user)
             return res.status(302).redirect("/");
         if (!req.body.username || !req.body.password || !req.body.passwordConfirm) {
             req.session.error = "Ensure all fields are filled out";
