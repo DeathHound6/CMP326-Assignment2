@@ -46,8 +46,7 @@ passport.use(
                 return done("Invalid username or password", null);
             if (bcrypt.compareSync(password, user.passhash))
                 return done(null, user.toObject());
-            else
-                return done("Invalid username or password", null);
+            done("Invalid username or password", null);
         }
     )
 );
