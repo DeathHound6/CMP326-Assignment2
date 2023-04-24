@@ -29,10 +29,10 @@ pool.getConnection().then((conn) => {
         `CREATE TABLE IF NOT EXISTS comments(
             id INT AUTO_INCREMENT,
             comment VARCHAR(255),
-            user VARCHAR(20),
+            user INT,
             image INT,
             PRIMARY KEY (id),
-            FOREIGN KEY (user) REFERENCES users(user),
+            FOREIGN KEY (user) REFERENCES users(id),
             FOREIGN KEY (image) REFERENCES images(id)
         );`);
     conn.query(
@@ -76,7 +76,7 @@ class Comment {
     constructor(row) {
         Object.defineProperty(this, "id", { writable: false, value: Number(row.id) });
         Object.defineProperty(this, "comment", { writable: false, value: String(row.comment) });
-        Object.defineProperty(this, "user", { writable: false, value: String(row.user) });
+        Object.defineProperty(this, "user", { writable: false, value: Number(row.user) });
         Object.defineProperty(this, "image", { writable: false, value: Number(row.image) });
     }
     toObject() {

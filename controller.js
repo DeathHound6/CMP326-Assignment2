@@ -149,6 +149,10 @@ exports.getAppImage = [
         image.views++;
         await db.updateImage(image);
         const comments = await db.getCommentsForImage(image.id) || [];
+        comments.map(async(comment) => {
+            comment.username = (await db.getUserById(comment.user))?.toObject().user;
+            return comment;
+        });
         const rating = await db.getAverageRatingForImage(image.id);
         render(req, res, "image.ejs", { image, comments, rating }, 200);
     }
@@ -196,7 +200,7 @@ exports.postAppImageComments = [
         }
         await db.insertComment({
             comment: req.body.comment,
-            user: req.user?.user,
+            user: req.user?.id,
             image: Number(req.params.image)
         });
         res.status(200).redirect(`/${req.params.image}`);
