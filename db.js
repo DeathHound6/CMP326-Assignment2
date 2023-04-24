@@ -179,7 +179,6 @@ async function getCommentsForImage(imageId) {
  * @param {Number} comment.image
  */
 async function insertComment(comment) {
-    console.log(comment);
     await query("INSERT INTO comments (comment, user, image) VALUES (?, ?, ?);", [comment.comment, comment.user, comment.image]);
 }
 
