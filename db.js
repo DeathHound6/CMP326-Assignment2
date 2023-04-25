@@ -181,6 +181,13 @@ async function getCommentsForImage(imageId) {
 async function insertComment(comment) {
     await query("INSERT INTO comments (comment, user, image) VALUES (?, ?, ?);", [comment.comment, comment.user, comment.image]);
 }
+/**
+ * @private
+ * @param {Number} imageId
+ */
+async function deleteCommentsForImage(imageId) {
+    await query("DELETE FROM comments WHERE image = ?", [imageId]);
+}
 
 /**
  * @returns {Promise<Image[]?>}
@@ -225,6 +232,8 @@ async function updateImage(image) {
  * @param {Number} imageId
  */
 async function deleteImage(imageId) {
+    await deleteRatingsForImage(imageId);
+    await deleteCommentsForImage(imageId);
     await query("DELETE FROM images WHERE id = ?", [imageId]);
 }
 
@@ -271,6 +280,13 @@ async function insertRating(rating) {
  */
 async function updateRating(rating) {
     await query("UPDATE image_ratings SET rating = ? WHERE user = ? AND image = ?", [rating.rating, rating.user, rating.image]);
+}
+/**
+ * @private
+ * @param {Number} imageId
+ */
+async function deleteRatingsForImage(imageId) {
+    await query("DELETE FROM image_ratings WHERE image = ?", [imageId]);
 }
 
 module.exports = {
